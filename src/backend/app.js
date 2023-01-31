@@ -21,8 +21,8 @@ app.use(express.json());
 app.use(cors());
 
 router.use("/meals", mealsRouter);
-//future-meals	Respond with all meals in the future (relative to the when datetime)
 
+//future-meals	Respond with all meals in the future (relative to the when datetime)
 app.get("/future-meals", async (req, res) => {
   try {
     const dbData = await knex.raw(
@@ -30,13 +30,15 @@ app.get("/future-meals", async (req, res) => {
     );
 
     if (dbData[0].length) {
-      res.send(dbData[0]);
+      res.json(dbData[0]);
     } else {
       res.statusCode = 404;
       res.send("No planned meals found for future ...");
     }
   } catch (error) {
+    res.statusCode = 500;
     console.error(error.message);
+    res.send(error.message);
   }
 });
 //past-meals	Respond with all meals in the past (relative to the when datetime)
@@ -47,13 +49,15 @@ app.get("/past-meals", async (req, res) => {
     );
 
     if (dbData[0].length) {
-      res.send(dbData[0]);
+      res.json(dbData[0]);
     } else {
       res.statusCode = 404;
       res.send("No no meals found berfore current date and time ...");
     }
   } catch (error) {
+    res.statusCode = 500;
     console.error(error.message);
+    res.send(error.message);
   }
 });
 //all-meals	Respond with all meals sorted by ID
@@ -62,13 +66,15 @@ app.get("/all-meals", async (req, res) => {
     const dbData = await knex.raw("Select * from Meal order by Meal.id");
 
     if (dbData[0].length) {
-      res.send(dbData[0]);
+      res.json(dbData[0]);
     } else {
       res.statusCode = 404;
       res.send("No no meals found in a database ...");
     }
   } catch (error) {
+    res.statusCode = 500;
     console.error(error.message);
+    res.send(error.message);
   }
 });
 //first-meal	Respond with the first meal (meaning with the minimum id)
@@ -79,13 +85,15 @@ app.get("/first-meal", async (req, res) => {
     );
 
     if (dbData[0].length) {
-      res.send(dbData[0][0]);
+      res.json(dbData[0][0]);
     } else {
       res.statusCode = 404;
       res.send("No no meals found in a database ...");
     }
   } catch (error) {
+    res.statusCode = 500;
     console.error(error.message);
+    res.send(error.message);
   }
 });
 //last-meal	Respond with the last meal (meaning with the maximum id)
@@ -96,13 +104,15 @@ app.get("/last-meal", async (req, res) => {
     );
 
     if (dbData[0].length) {
-      res.send(dbData[0][0]);
+      res.json(dbData[0][0]);
     } else {
       res.statusCode = 404;
       res.send("No no meals found in a database ...");
     }
   } catch (error) {
+    res.statusCode = 500;
     console.error(error.message);
+    res.send(error.message);
   }
 });
 
