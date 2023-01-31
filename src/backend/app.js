@@ -23,12 +23,12 @@ app.use(cors());
 router.use("/meals", mealsRouter);
 //future-meals	Respond with all meals in the future (relative to the when datetime)
 
-app.get("/future-meal", async (req, res) => {
+app.get("/future-meals", async (req, res) => {
   try {
     const dbData = await knex.raw(
       "Select * from Meal where Meal.when > CURRENT_TIMESTAMP()"
     );
-    console.dir(dbData);
+
     if (dbData[0].length) {
       res.send(dbData[0]);
     } else {
@@ -40,9 +40,72 @@ app.get("/future-meal", async (req, res) => {
   }
 });
 //past-meals	Respond with all meals in the past (relative to the when datetime)
+app.get("/past-meals", async (req, res) => {
+  try {
+    const dbData = await knex.raw(
+      "Select * from Meal where Meal.when < CURRENT_TIMESTAMP()"
+    );
+
+    if (dbData[0].length) {
+      res.send(dbData[0]);
+    } else {
+      res.statusCode = 404;
+      res.send("No no meals found berfore current date and time ...");
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+});
 //all-meals	Respond with all meals sorted by ID
+app.get("/all-meals", async (req, res) => {
+  try {
+    const dbData = await knex.raw("Select * from Meal order by Meal.id");
+
+    if (dbData[0].length) {
+      res.send(dbData[0]);
+    } else {
+      res.statusCode = 404;
+      res.send("No no meals found in a database ...");
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+});
 //first-meal	Respond with the first meal (meaning with the minimum id)
+app.get("/first-meal", async (req, res) => {
+  try {
+    const dbData = await knex.raw(
+      "Select * from Meal where Meal.id = (Select Min(Meal.id) from Meal)"
+    );
+
+    if (dbData[0].length) {
+      res.send(dbData[0][0]);
+    } else {
+      res.statusCode = 404;
+      res.send("No no meals found in a database ...");
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+});
 //last-meal	Respond with the last meal (meaning with the maximum id)
+app.get("/last-meal", async (req, res) => {
+  try {
+    const dbData = await knex.raw(
+      "Select * from Meal where Meal.id = (Select MAX(Meal.id) from Meal)"
+    );
+
+    if (dbData[0].length) {
+      res.send(dbData[0][0]);
+    } else {
+      res.statusCode = 404;
+      res.send("No no meals found in a database ...");
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+
 if (process.env.API_PATH) {
   app.use(process.env.API_PATH, router);
 } else {
