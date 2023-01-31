@@ -29,12 +29,7 @@ app.get("/future-meals", async (req, res) => {
       "Select * from Meal where Meal.when > CURRENT_TIMESTAMP()"
     );
 
-    if (dbData[0].length) {
-      res.json(dbData[0]);
-    } else {
-      res.statusCode = 404;
-      res.send("No planned meals found for future ...");
-    }
+    res.json(dbData[0]);
   } catch (error) {
     res.statusCode = 500;
     console.error(error.message);
@@ -47,13 +42,9 @@ app.get("/past-meals", async (req, res) => {
     const dbData = await knex.raw(
       "Select * from Meal where Meal.when < CURRENT_TIMESTAMP()"
     );
+    console.log(dbData[0]);
 
-    if (dbData[0].length) {
-      res.json(dbData[0]);
-    } else {
-      res.statusCode = 404;
-      res.send("No no meals found berfore current date and time ...");
-    }
+    res.json(dbData[0]);
   } catch (error) {
     res.statusCode = 500;
     console.error(error.message);
@@ -65,12 +56,7 @@ app.get("/all-meals", async (req, res) => {
   try {
     const dbData = await knex.raw("Select * from Meal order by Meal.id");
 
-    if (dbData[0].length) {
-      res.json(dbData[0]);
-    } else {
-      res.statusCode = 404;
-      res.send("No no meals found in a database ...");
-    }
+    res.json(dbData[0]);
   } catch (error) {
     res.statusCode = 500;
     console.error(error.message);
