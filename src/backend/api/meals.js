@@ -12,4 +12,12 @@ router.get("/", async (request, response) => {
   }
 });
 
+// /api/meals	GET	Returns all meals
+
+/*
+/api/meals	POST	Adds a new meal to the database
+/api/meals/:id	GET	Returns the meal by id
+/api/meals/:id	PUT	Updates the meal by id
+/api/meals/:id	DELETE	Deletes the meal by id*/
+
 module.exports = router;
