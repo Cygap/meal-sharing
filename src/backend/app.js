@@ -109,8 +109,8 @@ if (process.env.API_PATH) {
 }
 
 // for the frontend. Will first be covered in the react class
-app.use("*", (req, res) => {
+/*app.use("*", (req, res) => {
   res.sendFile(path.join(`${buildPath}/index.html`));
-});
+});*/
 
 module.exports = app;
