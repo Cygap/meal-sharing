@@ -9,7 +9,7 @@
     "build": "webpack --mode production",
     "start": "npm run build && node ./src/backend/server",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-    "server": "nodemon ./src/backend/server",
+    "server": "nodemon ./src/backend/server --trace-warnings",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Benjamin Hughes",
@@ -36,13 +36,13 @@
     "express-brute": "^1.0.1",
     "express-form-data": "^2.0.1",
     "html-webpack-plugin": "^4.3.0",
-    "knex": "~0.21.1",
+    "knex": "^0.21.1",
     "multer": "^1.3.0",
     "mysql2": "^2.1.0",
     "path": "^0.12.7",
-    "react": "16.8.2",
-    "react-dom": "16.8.2",
-    "react-router-dom": "5.0.1",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "react-router-dom": "^5.0.1",
     "sass": "^1.27.1",
     "sass-loader": "^10.0.4",
     "serve-favicon": "2.4.5",
@@ -52,11 +52,11 @@
     "webpack-cli": "^4.9.2"
   },
   "devDependencies": {
-    "case-sensitive-paths-webpack-plugin": "2.3.0",
-    "concurrently": "7.0.0",
-    "install-peers": "1.0.3",
-    "nodemon": "2.0.15",
-    "sequelize-cli": "6.4.1",
-    "webpack-dev-server": "4.7.4"
+    "case-sensitive-paths-webpack-plugin": "^2.3.0",
+    "concurrently": "^7.0.0",
+    "install-peers": "^1.0.3",
+    "nodemon": "^2.0.15",
+    "sequelize-cli": "^6.4.1",
+    "webpack-dev-server": "^4.7.4"
   }
 }
