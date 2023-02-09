@@ -9,3 +9,30 @@ content-type: application/json
     "max_reservations":"12",
     "price":"200",
     "created_date":"{{$localDatetime iso8601}}"}
+
+###
+
+GET http://localhost:5000/api/meals/36 HTTP/1.1
+
+###
+PUT http://localhost:5000/api/meals/5 HTTP/1.1
+content-type: application/json
+
+{ "id":"5",
+    "title":"Some deliciouse test meal",
+    "description":"something yammy to be here",
+    "location":"Denmark",
+    "when":"{{$localDatetime iso8601}}",
+    "max_reservations":"11",
+    "price":"220",
+    "created_date":"{{$localDatetime iso8601}}"}
+
+###
+
+DELETE http://localhost:5000/api/meals/15 HTTP/1.1
+
+###
+GET http://localhost:5000/api/meals/
+
+###
+GET http://localhost:5000/api/reservations/
