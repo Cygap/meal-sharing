@@ -10,7 +10,7 @@ const routesListToDBTables = {
   "/api/reservations": ["Reservation", "contact_name"]
 };
 
-router.get("/", async (request, response) => {
+router.get("/", async (request, response, next) => {
   try {
     // knex syntax for selecting things. Look up the documentation for knex for further info
     const titles = await knex(routesListToDBTables[request.baseUrl][0]).select(
@@ -18,21 +18,20 @@ router.get("/", async (request, response) => {
     );
     response.json(titles);
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
 
-router.post("/", async (request, response) => {
+router.post("/", async (request, response, next) => {
   try {
     await knex(routesListToDBTables[request.baseUrl][0]).insert(request.body);
     response.status(201).json(request.body);
   } catch (error) {
-    console.log(error.message);
-    response.status(500).send(error.message);
+    next(error);
   }
 });
 
-router.get("/:id", async (request, response) => {
+router.get("/:id", async (request, response, next) => {
   try {
     const titles = await knex(routesListToDBTables[request.baseUrl][0])
       .select(routesListToDBTables[request.baseUrl][1])
@@ -45,11 +44,11 @@ router.get("/:id", async (request, response) => {
     }
     response.json(titles);
   } catch (error) {
-    handleError(error, response);
+    next(error);
   }
 });
 
-router.put("/:id", async (request, response) => {
+router.put("/:id", async (request, response, next) => {
   try {
     console.log(
       "%cmeals.js line:47 request.baseUrl",
@@ -67,11 +66,11 @@ router.put("/:id", async (request, response) => {
     }
     response.json(request.body);
   } catch (error) {
-    handleError(error, response);
+    next(error);
   }
 });
 
-router.delete("/:id", async (request, response) => {
+router.delete("/:id", async (request, response, next) => {
   try {
     const deleted = await knex(routesListToDBTables[request.baseUrl][0])
       .delete()
@@ -84,7 +83,7 @@ router.delete("/:id", async (request, response) => {
     }
     response.json(request.body);
   } catch (error) {
-    handleError(error, response);
+    next(error);
   }
 });
 
