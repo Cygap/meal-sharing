@@ -1,7 +1,7 @@
 POST http://localhost:5000/api/meals HTTP/1.1
 content-type: application/json
 
-{ "id":"5",
+{ "id":"NULL",
     "title":"test meal",
     "description":"something to be here",
     "location":"Denmark",
@@ -36,3 +36,12 @@ GET http://localhost:5000/api/meals/
 
 ###
 GET http://localhost:5000/api/reservations/
+
+###
+GET http://localhost:5000/first-meal/
+
+###
+GET http://localhost:5000/api/meals?availableReservations=false
+
+###
+GET http://localhost:5000/api/meals?availableReservations=true

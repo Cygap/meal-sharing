@@ -24,6 +24,7 @@ app.use(cors());
 
 router.use("/meals", apiRouter);
 router.use("/reservations", apiRouter);
+router.use("/reviews", apiRouter);
 
 app.use("/", testRouter);
 
@@ -39,7 +40,8 @@ if (process.env.API_PATH) {
 });*/
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.log("\x1b[31m", "app.js line:42 stack", "\x1b[0m", err.stack);
+  // console.error(err.stack);
   handleError(err, res);
 });
 

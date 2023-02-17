@@ -7,15 +7,88 @@ const handleError = require("./error-handler");
 
 const routesListToDBTables = {
   "/api/meals": ["Meal", "title"],
-  "/api/reservations": ["Reservation", "contact_name"]
+  "/api/reservations": ["Reservation", "contact_name"],
+  "/api/reviews": ["Review", "title"]
 };
 
 router.get("/", async (request, response, next) => {
   try {
     // knex syntax for selecting things. Look up the documentation for knex for further info
-    const titles = await knex(routesListToDBTables[request.baseUrl][0]).select(
+    let titlesQuery = knex(routesListToDBTables[request.baseUrl][0]).select(
       routesListToDBTables[request.baseUrl][1]
     );
+    // had temperature around 39 for a week... didn't tested this appropriately...
+    if (request.query && request.baseUrl === "/api/meals") {
+      let sortDir = "ASC";
+      Object.keys(request.query).forEach((key) => {
+        switch (key) {
+          case "maxPrice":
+            titlesQuery = titlesQuery.where(
+              `price`,
+              "<",
+              `${Number(request.query[key])}`
+            );
+            break;
+          case "title":
+            titlesQuery = titlesQuery.where(
+              `${key}`,
+              "like",
+              `%${request.query[key]}%`
+            );
+            break;
+          case "dateAfter":
+            titlesQuery = titlesQuery.where(
+              `when`,
+              ">",
+              `${Date(request.query[key])}`
+            );
+            break;
+          case "dateBefore":
+            titlesQuery = titlesQuery.where(
+              `when`,
+              "<",
+              `${Date(request.query[key])}`
+            );
+            break;
+          case "limit":
+            titlesQuery = titlesQuery.limit(`${Number(request.query[key])}`);
+            break;
+          case "sortkey":
+            titlesQuery = titlesQuery.orderBy(`${request.query[key]}`, sortDir);
+            break;
+          case "sortDir":
+            sortDir = request.query[key];
+            break;
+          case "availableReservations":
+            titlesQuery = titlesQuery
+              .join("Reservation", {
+                "Meal.id": "Reservation.meal_id"
+              })
+              .groupBy("Meal.title");
+
+            if (request.query[key] === "true") {
+              titlesQuery = titlesQuery.havingRaw(
+                "MAX(Meal.max_reservations)< SUM(Reservation.number_of_guests)"
+              );
+            } else {
+              titlesQuery = titlesQuery.havingRaw(
+                "MAX(Meal.max_reservations) >= SUM(Reservation.number_of_guests)"
+              );
+            }
+            break;
+          default:
+            throw new Error("wrong or unsupported search parameter");
+            break;
+        }
+      });
+    }
+    console.log(
+      "\x1b[32m",
+      "routes.js line:83 query",
+      "\x1b[0m",
+      titlesQuery.toSQL().sql
+    );
+    const titles = await titlesQuery;
     response.json(titles);
   } catch (error) {
     next(error);
@@ -31,8 +104,29 @@ router.post("/", async (request, response, next) => {
   }
 });
 
+router.get("/:id/reviews", async (request, response, next) => {
+  try {
+    console.log("\x1b[32m", "routes.js line:109 Hello!", "\x1b[0m");
+    const titles = await knex("Review")
+      .select("Meal.title", "Review.title", "Review.description")
+      .join("Meal", { "Meal.id": "Review.meal_id" })
+      .where("Meal.id", request.params.id);
+
+    if (!titles.length) {
+      throw new AccessError(
+        "No meal reviews found",
+        "Provided id does not reference to any meal or there are no reviews for the referenced meal."
+      );
+    }
+    response.json(titles);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/:id", async (request, response, next) => {
   try {
+    console.log("\x1b[32m", "routes.js line:121 Hello!", "\x1b[0m");
     const titles = await knex(routesListToDBTables[request.baseUrl][0])
       .select(routesListToDBTables[request.baseUrl][1])
       .where("id", request.params.id);
