@@ -4,6 +4,7 @@ const router = express.Router();
 const knex = require("../database");
 const AccessError = require("./access-error");
 const handleError = require("./error-handler");
+const mealSearch = require("./meal-search");
 
 const routesListToDBTables = {
   "/api/meals": ["Meal", "title"],
@@ -17,77 +18,18 @@ router.get("/", async (request, response, next) => {
     let titlesQuery = knex(routesListToDBTables[request.baseUrl][0]).select(
       routesListToDBTables[request.baseUrl][1]
     );
-    // had temperature around 39 for a week... didn't tested this appropriately...
-    if (request.query && request.baseUrl === "/api/meals") {
-      let sortDir = "ASC";
-      Object.keys(request.query).forEach((key) => {
-        switch (key) {
-          case "maxPrice":
-            titlesQuery = titlesQuery.where(
-              `price`,
-              "<",
-              `${Number(request.query[key])}`
-            );
-            break;
-          case "title":
-            titlesQuery = titlesQuery.where(
-              `${key}`,
-              "like",
-              `%${request.query[key]}%`
-            );
-            break;
-          case "dateAfter":
-            titlesQuery = titlesQuery.where(
-              `when`,
-              ">",
-              `${Date(request.query[key])}`
-            );
-            break;
-          case "dateBefore":
-            titlesQuery = titlesQuery.where(
-              `when`,
-              "<",
-              `${Date(request.query[key])}`
-            );
-            break;
-          case "limit":
-            titlesQuery = titlesQuery.limit(`${Number(request.query[key])}`);
-            break;
-          case "sortkey":
-            titlesQuery = titlesQuery.orderBy(`${request.query[key]}`, sortDir);
-            break;
-          case "sortDir":
-            sortDir = request.query[key];
-            break;
-          case "availableReservations":
-            titlesQuery = titlesQuery
-              .join("Reservation", {
-                "Meal.id": "Reservation.meal_id"
-              })
-              .groupBy("Meal.title");
 
-            if (request.query[key] === "true") {
-              titlesQuery = titlesQuery.havingRaw(
-                "MAX(Meal.max_reservations)< SUM(Reservation.number_of_guests)"
-              );
-            } else {
-              titlesQuery = titlesQuery.havingRaw(
-                "MAX(Meal.max_reservations) >= SUM(Reservation.number_of_guests)"
-              );
-            }
-            break;
-          default:
-            throw new Error("wrong or unsupported search parameter");
-            break;
-        }
-      });
+    if (request.query && request.baseUrl === "/api/meals") {
+      titlesQuery = mealSearch(request, titlesQuery);
     }
-    console.log(
-      "\x1b[32m",
-      "routes.js line:83 query",
-      "\x1b[0m",
-      titlesQuery.toSQL().sql
-    );
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        "\x1b[32m",
+        "routes.js line:83 query",
+        "\x1b[0m",
+        titlesQuery.toSQL().sql
+      );
+    }
     const titles = await titlesQuery;
     response.json(titles);
   } catch (error) {
