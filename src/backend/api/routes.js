@@ -4,36 +4,71 @@ const router = express.Router();
 const knex = require("../database");
 const AccessError = require("./access-error");
 const handleError = require("./error-handler");
+const mealSearch = require("./meal-search");
 
 const routesListToDBTables = {
   "/api/meals": ["Meal", "title"],
-  "/api/reservations": ["Reservation", "contact_name"]
+  "/api/reservations": ["Reservation", "contact_name"],
+  "/api/reviews": ["Review", "title"]
 };
 
-router.get("/", async (request, response) => {
+router.get("/", async (request, response, next) => {
   try {
     // knex syntax for selecting things. Look up the documentation for knex for further info
-    const titles = await knex(routesListToDBTables[request.baseUrl][0]).select(
+    let titlesQuery = knex(routesListToDBTables[request.baseUrl][0]).select(
       routesListToDBTables[request.baseUrl][1]
     );
+
+    if (request.query && request.baseUrl === "/api/meals") {
+      titlesQuery = mealSearch(request, titlesQuery);
+    }
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        "\x1b[32m",
+        "routes.js line:83 query",
+        "\x1b[0m",
+        titlesQuery.toSQL().sql
+      );
+    }
+    const titles = await titlesQuery;
     response.json(titles);
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
 
-router.post("/", async (request, response) => {
+router.post("/", async (request, response, next) => {
   try {
     await knex(routesListToDBTables[request.baseUrl][0]).insert(request.body);
     response.status(201).json(request.body);
   } catch (error) {
-    console.log(error.message);
-    response.status(500).send(error.message);
+    next(error);
   }
 });
 
-router.get("/:id", async (request, response) => {
+router.get("/:id/reviews", async (request, response, next) => {
   try {
+    console.log("\x1b[32m", "routes.js line:109 Hello!", "\x1b[0m");
+    const titles = await knex("Review")
+      .select("Meal.title", "Review.title", "Review.description")
+      .join("Meal", { "Meal.id": "Review.meal_id" })
+      .where("Meal.id", request.params.id);
+
+    if (!titles.length) {
+      throw new AccessError(
+        "No meal reviews found",
+        "Provided id does not reference to any meal or there are no reviews for the referenced meal."
+      );
+    }
+    response.json(titles);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/:id", async (request, response, next) => {
+  try {
+    console.log("\x1b[32m", "routes.js line:121 Hello!", "\x1b[0m");
     const titles = await knex(routesListToDBTables[request.baseUrl][0])
       .select(routesListToDBTables[request.baseUrl][1])
       .where("id", request.params.id);
@@ -45,11 +80,11 @@ router.get("/:id", async (request, response) => {
     }
     response.json(titles);
   } catch (error) {
-    handleError(error, response);
+    next(error);
   }
 });
 
-router.put("/:id", async (request, response) => {
+router.put("/:id", async (request, response, next) => {
   try {
     console.log(
       "%cmeals.js line:47 request.baseUrl",
@@ -67,11 +102,11 @@ router.put("/:id", async (request, response) => {
     }
     response.json(request.body);
   } catch (error) {
-    handleError(error, response);
+    next(error);
   }
 });
 
-router.delete("/:id", async (request, response) => {
+router.delete("/:id", async (request, response, next) => {
   try {
     const deleted = await knex(routesListToDBTables[request.baseUrl][0])
       .delete()
@@ -84,7 +119,7 @@ router.delete("/:id", async (request, response) => {
     }
     response.json(request.body);
   } catch (error) {
-    handleError(error, response);
+    next(error);
   }
 });
 

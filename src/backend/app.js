@@ -4,12 +4,13 @@ const router = express.Router();
 const path = require("path");
 
 const apiRouter = require("./api/routes");
+const testRouter = require("./api/test-routes");
 
 const buildPath = path.join(__dirname, "../../dist");
 const port = process.env.PORT || 3000;
 const cors = require("cors");
 const knex = require("./database");
-
+const handleError = require("./api/error-handler");
 // For week4 no need to look into this!
 // Serve the built client html
 app.use(express.static(buildPath));
@@ -23,86 +24,9 @@ app.use(cors());
 
 router.use("/meals", apiRouter);
 router.use("/reservations", apiRouter);
+router.use("/reviews", apiRouter);
 
-//future-meals	Respond with all meals in the future (relative to the when datetime)
-app.get("/future-meals", async (req, res) => {
-  try {
-    const dbData = await knex.raw(
-      "Select * from Meal where Meal.when > CURRENT_TIMESTAMP()"
-    );
-
-    res.json(dbData[0]);
-  } catch (error) {
-    res.statusCode = 500;
-    console.error(error.message);
-    res.send(error.message);
-  }
-});
-//past-meals	Respond with all meals in the past (relative to the when datetime)
-app.get("/past-meals", async (req, res) => {
-  try {
-    const dbData = await knex.raw(
-      "Select * from Meal where Meal.when < CURRENT_TIMESTAMP()"
-    );
-    console.log(dbData[0]);
-
-    res.json(dbData[0]);
-  } catch (error) {
-    res.statusCode = 500;
-    console.error(error.message);
-    res.send(error.message);
-  }
-});
-//all-meals	Respond with all meals sorted by ID
-app.get("/all-meals", async (req, res) => {
-  try {
-    const dbData = await knex.raw("Select * from Meal order by Meal.id");
-
-    res.json(dbData[0]);
-  } catch (error) {
-    res.statusCode = 500;
-    console.error(error.message);
-    res.send(error.message);
-  }
-});
-//first-meal	Respond with the first meal (meaning with the minimum id)
-app.get("/first-meal", async (req, res) => {
-  try {
-    const dbData = await knex.raw(
-      "Select * from Meal where Meal.id = (Select Min(Meal.id) from Meal)"
-    );
-
-    if (dbData[0].length) {
-      res.json(dbData[0][0]);
-    } else {
-      res.statusCode = 404;
-      res.send("No no meals found in a database ...");
-    }
-  } catch (error) {
-    res.statusCode = 500;
-    console.error(error.message);
-    res.send(error.message);
-  }
-});
-//last-meal	Respond with the last meal (meaning with the maximum id)
-app.get("/last-meal", async (req, res) => {
-  try {
-    const dbData = await knex.raw(
-      "Select * from Meal where Meal.id = (Select MAX(Meal.id) from Meal)"
-    );
-
-    if (dbData[0].length) {
-      res.json(dbData[0][0]);
-    } else {
-      res.statusCode = 404;
-      res.send("No no meals found in a database ...");
-    }
-  } catch (error) {
-    res.statusCode = 500;
-    console.error(error.message);
-    res.send(error.message);
-  }
-});
+app.use("/", testRouter);
 
 if (process.env.API_PATH) {
   app.use(process.env.API_PATH, router);
@@ -114,5 +38,11 @@ if (process.env.API_PATH) {
 /*app.use("*", (req, res) => {
   res.sendFile(path.join(`${buildPath}/index.html`));
 });*/
+
+app.use((err, req, res, next) => {
+  console.log("\x1b[31m", "app.js line:42 stack", "\x1b[0m", err.stack);
+  // console.error(err.stack);
+  handleError(err, res);
+});
 
 module.exports = app;
