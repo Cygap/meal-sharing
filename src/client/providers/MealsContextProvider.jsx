@@ -51,7 +51,7 @@ const MealsContextProvider = (props) => {
   const [initialMeals = [], setInitialMeals] = useState();
 
   const [meals, dispatchMeals] = useReducer(MealsReducer, initialMeals);
-
+  //ADD abort controller for slower connections, if paginizing meals later-on.
   useEffect(() => {
     (async () => {
       const response = await fetch(
