@@ -1,0 +1,33 @@
+.meal {
+  width: 15rem;
+  height: 15rem;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  border: 1px solid;
+  border-radius: 10px;
+}
+
+.meal:hover {
+  text-shadow: 10px darkblue;
+  font-weight: bold;
+  transform: scale(1.1);
+  text-shadow: 0.5rem 0.5rem 0.2rem grey;
+}
+
+.title {
+  text-align: center;
+}
+
+.mealControls {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+}
+
+.mealDetails {
+  flex-shrink: 1;
+  overflow: hidden;
+}
