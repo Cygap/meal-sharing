@@ -30,4 +30,15 @@
 .mealDetails {
   flex-shrink: 1;
   overflow: hidden;
+  margin: 0.3rem;
+}
+.mealDetailsExpanded {
+  overflow: auto;
+  background-color: white;
+  flex-shrink: 0;
+  text-shadow: none;
+}
+.mealWrapperExpanded {
+  height: auto;
+  position: relative;
 }
