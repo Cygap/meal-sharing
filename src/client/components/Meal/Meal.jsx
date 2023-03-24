@@ -1,10 +1,16 @@
 import React, { useContext, useState } from "react";
 import mealStyles from "./Meal.module.css";
 import { MealsContext } from "../../providers/MealsContextProvider";
+import { Navigate, useParams } from "react-router-dom";
 
 export default function Meal({ mealId }) {
+  const { id } = useParams();
   const [meals, dispatchMeals] = useContext(MealsContext);
-  const meal = meals.find((meal) => meal.id === mealId);
+  const meal = meals.find((meal) => meal.id === mealId || meal.id === id);
+  if (!meal) {
+    return <Navigate to="/" />;
+  }
+
   const { title, description, location, when, price, created_date } = meal;
   const [expanded, setExpanded] = useState(false);
   const handleExpand = (e) => {
