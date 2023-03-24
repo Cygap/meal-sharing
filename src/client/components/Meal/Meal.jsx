@@ -46,7 +46,9 @@ export default function Meal({ mealId }) {
         <button onClick={() => dispatchMeals({ type: "DEL", payload: [meal] })}>
           delete
         </button>
-        <button onClick={handleExpand}>{expanded ? "hide" : "details"}</button>
+        <button onClick={() => setExpanded(!expanded)}>
+          {expanded ? "hide" : "details"}
+        </button>
       </div>
     </div>
   );
