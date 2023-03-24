@@ -1,14 +1,14 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
-@import 'theme.css';
+@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
+@import "theme.css";
 * {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   box-sizing: border-box;
 }
 
 #root {
-  padding-left: 30%;
-  padding-right: 30%;
   height: 100vh;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 body {
@@ -39,14 +39,14 @@ button {
 
 @media screen and (max-width: 1400px) {
   #root {
-    padding-left: 30%;
-    padding-right: 30%;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 
 @media screen and (max-width: 750px) {
   #root {
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 3px;
+    padding-right: 3px;
   }
 }

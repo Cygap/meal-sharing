@@ -7,17 +7,16 @@ const handleError = require("./error-handler");
 const mealSearch = require("./meal-search");
 
 const routesListToDBTables = {
-  "/api/meals": ["Meal", "title"],
-  "/api/reservations": ["Reservation", "contact_name"],
-  "/api/reviews": ["Review", "title"]
+  "/api/meals": ["Meal", "*"],
+  "/api/reservations": ["Reservation", "*"],
+  "/api/reviews": ["Review", "*"]
 };
 
 router.get("/", async (request, response, next) => {
   try {
     // knex syntax for selecting things. Look up the documentation for knex for further info
     let titlesQuery = knex(routesListToDBTables[request.baseUrl][0]).select(
-      "*"
-      // routesListToDBTables[request.baseUrl][1]
+      routesListToDBTables[request.baseUrl][1]
     );
 
     if (request.query && request.baseUrl === "/api/meals") {
