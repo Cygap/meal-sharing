@@ -1,18 +1,31 @@
 import React, { useContext, useState } from "react";
 import mealStyles from "./Meal.module.css";
 import { MealsContext } from "../../providers/MealsContextProvider";
-import { Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
+import mealPic from "../../assets/images/Meal-Placeholder.png";
 
 export default function Meal({ mealId }) {
-  const { id } = useParams();
-  const [meals, dispatchMeals] = useContext(MealsContext);
-  const meal = meals.find((meal) => meal.id === mealId || meal.id === id);
-  if (!meal) {
+  const { meals, dispatchMeals, fetchStatus } = useContext(MealsContext);
+  const [expanded, setExpanded] = useState(false);
+
+  if (!meals.length && fetchStatus === "done") {
     return <Navigate to="/" />;
   }
 
+  if (fetchStatus !== "done") {
+    return <div>{fetchStatus}</div>;
+  }
+
+  const meal = meals.find((meal) => meal.id === Number(mealId));
+  if (!meal) {
+    return (
+      <>
+        <div>No meal found with provided id</div>
+        <Link to="/">Home</Link>
+      </>
+    );
+  }
   const { title, description, location, when, price, created_date } = meal;
-  const [expanded, setExpanded] = useState(false);
   const handleExpand = (e) => {
     setExpanded(!expanded);
   };
@@ -27,10 +40,16 @@ export default function Meal({ mealId }) {
     <div className={mealWrapperStyles}>
       <div className={mealDetailsClassnames}>
         <h2 className={mealStyles.title}>{title ?? "Meal title is empty"}:</h2>
+        <img
+          src={mealPic}
+          alt="meal placeholder"
+          width="100%"
+          className={mealStyles.imageContainer}
+        />
         <p>
           <b>Description:</b> {description ?? "Meal description is empty"}
         </p>
-        <p>placeholder for the picture</p>
+
         <p>
           <b>Place:</b> {location ?? "location is empty"}
         </p>

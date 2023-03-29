@@ -1,6 +1,8 @@
 import React from "react";
 import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
+import HomeMeals from "./components/HomeMeals/HomeMeals";
 import Meal from "./components/Meal/Meal";
+import MealDetails from "./components/MealDetails/MealDetails";
 import MealsList from "./components/MealList/MealList";
 
 import MealsContextProvider from "./providers/MealsContextProvider";
@@ -8,7 +10,12 @@ import MealsContextProvider from "./providers/MealsContextProvider";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <h1>Meal Sharing home page</h1>
+    element: (
+      <>
+        <h1>Meal Sharing home page</h1>
+        <HomeMeals />
+      </>
+    )
   },
   {
     path: "/meals",
@@ -16,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/meals/:id",
-    element: <Meal mealId={0} />
+    element: <MealDetails />
   },
   {
     path: "*",

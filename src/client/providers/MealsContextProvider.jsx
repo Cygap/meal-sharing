@@ -46,30 +46,67 @@ function MealsReducer(allMealsState, action) {
       throw new Error("Unknown action!");
   }
 }
-
+const statusEnum = {
+  loading: "loading",
+  idle: "idle",
+  done: "done",
+  error: "error"
+};
 const MealsContextProvider = (props) => {
-  const [initialMeals = [], setInitialMeals] = useState();
+  const [searchParams, setSearchParams] = useState({ title: { value: "" } });
+  const [meals, dispatchMeals] = useReducer(MealsReducer, []);
+  const [fetchStatus, setFetchStatus] = useState(statusEnum.idle);
 
-  const [meals, dispatchMeals] = useReducer(MealsReducer, initialMeals);
+  // useEffect(() => {
+  //   setSearchParams({ ...searchParams, limit: { value: 4 } });
+  // }, []);
+
   //ADD abort controller for slower connections, if paginizing meals later-on.
   useEffect(() => {
-    (async () => {
-      const response = await fetch(
-        `${process.env.APP_BASE_URL}:${process.env.API_PORT}${process.env.API_PATH}/meals`
-      );
+    setFetchStatus(statusEnum.loading);
+    const debounce = setTimeout(async () => {
+      try {
+        let queryParams = "";
+        Object.keys(searchParams).forEach((param) => {
+          queryParams += `${param}=${searchParams[param].value}&`;
+        });
 
-      const meals = await response.json();
+        const response = await fetch(
+          `${process.env.APP_BASE_URL}:${process.env.API_PORT}${process.env.API_PATH}/meals?${queryParams}`
+        );
+        if (!response.ok) {
+          setFetchStatus(statusEnum.error);
+          throw new Error(response.statusText);
+        }
+        const meals = await response.json();
 
-      setInitialMeals(meals);
+        const action = { type: "INIT", payload: meals };
 
-      const action = { type: "INIT", payload: meals };
-
-      dispatchMeals(action);
-    })();
-  }, []);
+        dispatchMeals(action);
+        setFetchStatus(statusEnum.done);
+      } catch (error) {
+        console.log(
+          "%c Error happend while fetching",
+          "color: #007acc;",
+          error.message
+        );
+      }
+    }, 200);
+    return () => {
+      clearTimeout(debounce);
+      setFetchStatus(statusEnum.idle);
+    };
+  }, [searchParams]);
 
   return (
-    <MealsContext.Provider value={[meals, dispatchMeals]}>
+    <MealsContext.Provider
+      value={{
+        meals,
+        dispatchMeals,
+        searchParams,
+        setSearchParams,
+        fetchStatus
+      }}>
       {props.children}
     </MealsContext.Provider>
   );
