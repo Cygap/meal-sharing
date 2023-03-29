@@ -46,6 +46,32 @@ router.post("/", async (request, response, next) => {
   }
 });
 
+router.get("/:id/:metaData", async (request, response, next) => {
+  try {
+    console.log(
+      "\x1b[32m",
+      "routes.js line:109 params: ",
+      request.params,
+      "\x1b[0m"
+    );
+
+    const titles = await knex(request.params.metaData)
+      .select("*")
+      .where("meal_id", request.params.id);
+
+    if (!titles.length) {
+      throw new AccessError(
+        "No meal data found",
+        "Provided id does not reference to any meal or there are no data for the referenced meal."
+      );
+    }
+    console.log("%croutes.js line:68 titles", "color: #007acc;", titles);
+    response.json(titles);
+  } catch (error) {
+    next(error);
+  }
+});
+/*
 router.get("/:id/reviews", async (request, response, next) => {
   try {
     console.log("\x1b[32m", "routes.js line:109 Hello!", "\x1b[0m");
@@ -64,7 +90,7 @@ router.get("/:id/reviews", async (request, response, next) => {
   } catch (error) {
     next(error);
   }
-});
+});*/
 
 router.get("/:id", async (request, response, next) => {
   try {
