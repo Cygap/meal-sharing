@@ -2,6 +2,13 @@ function constructDBQuery(request, titlesQuery) {
   let sortDir = "ASC";
   Object.keys(request.query).forEach((key) => {
     switch (key) {
+      case "id":
+        titlesQuery = titlesQuery.where(
+          `id`,
+          "=",
+          `${Number(request.query[key])}`
+        );
+        break;
       case "maxPrice":
         titlesQuery = titlesQuery.where(
           `price`,

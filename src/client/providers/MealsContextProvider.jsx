@@ -38,7 +38,19 @@ function MealsReducer(allMealsState, action) {
         1,
         { ...action.payload[0], done }
       );
-
+      return newMeals;
+    case "AVAILABLE":
+      const mealToUpdate = newMeals.find(
+        (meal) => meal.id === action.payload[0].id
+      );
+      if (mealToUpdate) {
+        mealToUpdate.available = action.payload[0].available;
+      }
+      console.log(
+        "%cMealsContextProvider.jsx line:49 mealToUpdate",
+        "color: #007acc;",
+        mealToUpdate
+      );
       return newMeals;
     case "INIT":
       return action.payload;
@@ -56,7 +68,7 @@ const MealsContextProvider = (props) => {
   const [searchParams, setSearchParams] = useState({ title: { value: "" } });
   const [meals, dispatchMeals] = useReducer(MealsReducer, []);
   const [fetchStatus, setFetchStatus] = useState(statusEnum.idle);
-
+  const getMealById = (id) => meals.find((meal) => meal.id === Number(id));
   // useEffect(() => {
   //   setSearchParams({ ...searchParams, limit: { value: 4 } });
   // }, []);
@@ -98,6 +110,26 @@ const MealsContextProvider = (props) => {
     };
   }, [searchParams]);
 
+  const setAvailable = (reservations, mealId) => {
+    const bookings = reservations.reduce(
+      (sum, reservation) => (sum += reservation.number_of_guests),
+      0
+    );
+    console.log(
+      "%cMealsContextProvider.jsx line:114 bookings",
+      "color: #007acc;",
+      bookings,
+      meals
+    );
+    const available = getMealById(mealId).max_reservations > bookings;
+    dispatchMeals({
+      type: "AVAILABLE",
+      payload: [{ id: Number(mealId), available }]
+    });
+    if (available) {
+    }
+  };
+
   return (
     <MealsContext.Provider
       value={{
@@ -105,7 +137,9 @@ const MealsContextProvider = (props) => {
         dispatchMeals,
         searchParams,
         setSearchParams,
-        fetchStatus
+        fetchStatus,
+        setAvailable,
+        getMealById
       }}>
       {props.children}
     </MealsContext.Provider>
