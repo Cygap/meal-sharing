@@ -20,7 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-app.use(cors());
+app.use(
+  cors({ origin: `${process.env.APP_BASE_URL}:${process.env.CLIENT_PORT}` })
+);
 
 router.use("/meals", apiRouter);
 router.use("/reservations", apiRouter);
@@ -40,7 +42,13 @@ if (process.env.API_PATH) {
 });*/
 
 app.use((err, req, res, next) => {
-  console.log("\x1b[31m", "app.js line:42 stack", "\x1b[0m", err.stack);
+  console.log(
+    "\x1b[31m",
+    "app.js line:45 stack",
+    "\x1b[0m",
+    err.stack,
+    " here is the request /n"
+  );
   // console.error(err.stack);
   handleError(err, res);
 });

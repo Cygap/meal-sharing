@@ -34,18 +34,18 @@ export default function ReservationForm({ mealId }) {
         />
         <input
           type="email"
-          name="email"
-          id={`email-${mealId}`}
+          name="contact_email"
+          id={`contact_email-${mealId}`}
           placeholder="your email"
-          value={formData.email}
+          value={formData.contact_email}
           onChange={handleChange}
         />
         <input
           type="text"
-          name="phone_number"
-          id={`phone_number-${mealId}`}
+          name="contact_phonenumber"
+          id={`contact_phonenumber-${mealId}`}
           placeholder="your phone number"
-          value={formData.phone_number}
+          value={formData.contact_phonenumber}
           onChange={handleChange}
         />
 

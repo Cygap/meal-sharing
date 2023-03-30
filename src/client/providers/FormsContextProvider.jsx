@@ -6,7 +6,7 @@ const postFormData = async (dataToPost, route) => {
   try {
     const response = await fetch(route, {
       method: "POST",
-      body: dataToPost,
+      body: JSON.stringify(dataToPost),
       headers: { "Content-Type": "application/json" }
     });
     if (!response.ok) {
@@ -55,8 +55,8 @@ export default function FormContextProvider(props) {
   const [formData, dispatchFormData] = useReducer(reducer, {
     number_of_guests: "",
     contact_name: "",
-    email: "",
-    phone_number: "",
+    contact_email: "",
+    contact_phonenumber: "",
     title: "",
     description: "",
     stars: "",
@@ -76,24 +76,29 @@ export default function FormContextProvider(props) {
     let route = `${process.env.APP_BASE_URL}:${process.env.API_PORT}${process.env.API_PATH}/`;
     switch (event.target.name) {
       case "meal-reservation":
-        const { number_of_guests, contact_name, email, phone_number } =
-          formData;
-        route += `Reservation`;
+        const {
+          number_of_guests,
+          contact_name,
+          contact_email,
+          contact_phonenumber
+        } = formData;
+        route += `reservations`;
         dispatchFormData({
           type: "formSubmit",
           payload: {
             number_of_guests,
             contact_name,
-            email,
-            phone_number,
-            meal_id
+            contact_email,
+            contact_phonenumber,
+            meal_id,
+            created_date: new Date().toISOString().split("T")[0]
           },
           route
         });
         break;
       case "meal-review":
         const { title, description, stars } = formData;
-        route += `Review`;
+        route += `reviews`;
         dispatchFormData({
           type: "formSubmit",
           payload: { title, description, stars, meal_id },

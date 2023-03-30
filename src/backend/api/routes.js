@@ -39,6 +39,12 @@ router.get("/", async (request, response, next) => {
 
 router.post("/", async (request, response, next) => {
   try {
+    console.log(
+      "\x1b[32m",
+      "routes.js line:42 request",
+      "\x1b[0m",
+      request.body
+    );
     await knex(routesListToDBTables[request.baseUrl][0]).insert(request.body);
     response.status(201).json(request.body);
   } catch (error) {
