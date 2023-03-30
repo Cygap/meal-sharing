@@ -3,7 +3,7 @@ import { FormContext } from "../../providers/FormsContextProvider";
 export default function ReviewForm({ mealId, disabled }) {
   const { handleChange, submitHandler, formData } = useContext(FormContext);
   return (
-    <form name="meal-review" onSubmit={submitHandler}>
+    <form name="meal-review" onSubmit={(e) => submitHandler(e, mealId)}>
       <fieldset disabled={disabled}>
         <input
           type="text"

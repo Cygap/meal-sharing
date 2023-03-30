@@ -12,7 +12,7 @@ export default function ReservationForm({ mealId }) {
     disabled
   );
   return (
-    <form name="meal-reservation" onSubmit={submitHandler}>
+    <form name="meal-reservation" onSubmit={(e) => submitHandler(e, mealId)}>
       <fieldset disabled={disabled}>
         <input
           type="number"
