@@ -6,22 +6,25 @@ import Meal from "../Meal/Meal";
 import ReservationForm from "../ReservationForm/ReservationForm";
 import Reservations from "../Reservations/Reservations";
 import ReviewForm from "../ReviewForm/ReviewForm";
+import Reviews from "../Reviews/Reviews";
 
 export default function MealDetails() {
   const { id } = useParams();
-  const { setSearchParams, meals, fetchStatus } = useContext(MealsContext);
+  const { setSearchParams, getMealById, fetchStatus } =
+    useContext(MealsContext);
   useEffect(() => {
     setSearchParams({ id: { value: id } });
   }, []);
-  const meal = meals.find((meal) => meal.id === Number(id));
+  const meal = getMealById(id);
   if (meal) {
     return (
       <>
         <Meal mealId={meal.id} />
         <FormContextProvider>
-          <ReservationForm mealId={meal.id} disabled={false} />
+          <ReservationForm mealId={meal.id} />
           <Reservations mealId={meal.id} />
           <ReviewForm mealId={meal.id} disabled={false} />
+          <Reviews mealId={meal.id} />
         </FormContextProvider>
       </>
     );

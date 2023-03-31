@@ -1,12 +1,15 @@
 import React, { createContext, useReducer, useState, useContext } from "react";
 import getReservations from "./getReservations";
+import getReviews from "./getReviews";
 import { MealsContext } from "./MealsContextProvider";
 
 export const FormContext = createContext({});
 
 export default function FormContextProvider(props) {
   const [reservations, setReservations] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const { setAvailable } = useContext(MealsContext);
+
   const postFormData = async (dataToPost, route) => {
     try {
       const response = await fetch(route, {
@@ -18,8 +21,19 @@ export default function FormContextProvider(props) {
         throw new Error(response.statusText);
       }
       const result = await response.json();
-
-      getReservations(dataToPost.meal_id, setReservations, setAvailable);
+      switch (/[^/]*$/.exec(route)[0]) {
+        case "reservations":
+          getReservations(dataToPost.meal_id, setReservations, setAvailable);
+          break;
+        case "reviews":
+          getReviews(dataToPost.meal_id, setReviews);
+          break;
+        default:
+          console.log(
+            "%cFormsContextProvider.jsx Unknnown route",
+            "color: #007acc;"
+          );
+      }
       console.log(
         "%cFormsContextProvider.jsx line:14 result",
         "color: #007acc;",
@@ -125,7 +139,9 @@ export default function FormContextProvider(props) {
         submitHandler,
         formData,
         reservations,
-        setReservations
+        setReservations,
+        reviews,
+        setReviews
       }}>
       {props.children}
     </FormContext.Provider>

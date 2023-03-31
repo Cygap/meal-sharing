@@ -1,5 +1,3 @@
-import React, { useEffect, useState, useContext } from "react";
-
 export default async function getReservations(
   mealId,
   setReservations,
@@ -26,5 +24,6 @@ export default async function getReservations(
       "color: #007acc;",
       error.message
     );
+    setAvailable([], mealId);
   }
 }

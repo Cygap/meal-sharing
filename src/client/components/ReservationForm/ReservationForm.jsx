@@ -6,11 +6,7 @@ export default function ReservationForm({ mealId }) {
   const { handleChange, submitHandler, formData } = useContext(FormContext);
   const { getMealById } = useContext(MealsContext);
   const disabled = !getMealById(mealId).available ?? true;
-  console.log(
-    "%cReservationForm.jsx line:9 disabled",
-    "color: #007acc;",
-    disabled
-  );
+
   return (
     <form name="meal-reservation" onSubmit={(e) => submitHandler(e, mealId)}>
       <fieldset disabled={disabled}>
