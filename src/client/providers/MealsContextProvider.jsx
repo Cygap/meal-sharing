@@ -65,7 +65,18 @@ const statusEnum = {
   error: "error"
 };
 const MealsContextProvider = (props) => {
-  const [searchParams, setSearchParams] = useState({ title: { value: "" } });
+  const defaultFilter = {
+    created_date: "",
+    description: "",
+    id: "",
+    location: "",
+    max_reservations: "",
+    maxPrice: "",
+    title: "",
+    when: "",
+    availableReservations: ""
+  };
+  const [searchParams, setSearchParams] = useState(defaultFilter);
   const [meals, dispatchMeals] = useReducer(MealsReducer, []);
   const [fetchStatus, setFetchStatus] = useState(statusEnum.idle);
   const getMealById = (id) => meals.find((meal) => meal.id === Number(id));
@@ -79,9 +90,12 @@ const MealsContextProvider = (props) => {
     const debounce = setTimeout(async () => {
       try {
         let queryParams = "";
-        Object.keys(searchParams).forEach((param) => {
-          queryParams += `${param}=${searchParams[param].value}&`;
-        });
+        const keys = Object.keys(searchParams);
+        for (let key of keys) {
+          if (searchParams[key]) {
+            queryParams += `${key}=${searchParams[key]}&`;
+          }
+        }
 
         const response = await fetch(
           `${process.env.APP_BASE_URL}:${process.env.API_PORT}${process.env.API_PATH}/meals?${queryParams}`

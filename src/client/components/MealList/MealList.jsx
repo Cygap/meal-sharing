@@ -15,7 +15,8 @@ export default function MealsList() {
       ) : (
         meals.map((meal) => (
           <li key={meal.id}>
-            <Link to={`meals/${meal.id}`}>
+            <Link
+              to={`${process.env.APP_BASE_URL}:${process.env.CLIENT_PORT}/meals/${meal.id}`}>
               <Meal mealId={meal.id} />
             </Link>
           </li>

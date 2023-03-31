@@ -13,7 +13,7 @@ export default function MealDetails() {
   const { setSearchParams, getMealById, fetchStatus } =
     useContext(MealsContext);
   useEffect(() => {
-    setSearchParams({ id: { value: id } });
+    setSearchParams({ id });
   }, []);
   const meal = getMealById(id);
   if (meal) {

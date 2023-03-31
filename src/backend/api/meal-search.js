@@ -47,19 +47,19 @@ function constructDBQuery(request, titlesQuery) {
         sortDir = request.query[key];
         break;
       case "availableReservations":
-        titlesQuery = titlesQuery
+        /*titlesQuery = titlesQuery
           .join("Reservation", {
             "Meal.id": "Reservation.meal_id"
           })
-          .groupBy("Meal.title");
+          .groupBy("Meal.title");*/
 
         if (request.query[key] === "true") {
-          titlesQuery = titlesQuery.havingRaw(
-            "MAX(Meal.max_reservations)< SUM(Reservation.number_of_guests)"
+          titlesQuery = titlesQuery.whereRaw(
+            "Meal.max_reservations > (SELECT COALESCE(SUM(Reservation.number_of_guests),0) FROM Reservation WHERE Reservation.meal_id = Meal.id)"
           );
         } else {
-          titlesQuery = titlesQuery.havingRaw(
-            "MAX(Meal.max_reservations) >= SUM(Reservation.number_of_guests)"
+          titlesQuery = titlesQuery.whereRaw(
+            "Meal.max_reservations <= (SELECT COALESCE(SUM(Reservation.number_of_guests),0) FROM Reservation WHERE Reservation.meal_id = Meal.id)"
           );
         }
         break;
