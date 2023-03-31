@@ -1,5 +1,6 @@
 function constructDBQuery(request, titlesQuery) {
-  let sortDir = "ASC";
+  let sortDir;
+  let sortKey;
   Object.keys(request.query).forEach((key) => {
     switch (key) {
       case "id":
@@ -40,19 +41,14 @@ function constructDBQuery(request, titlesQuery) {
       case "limit":
         titlesQuery = titlesQuery.limit(`${Number(request.query[key])}`);
         break;
-      case "sortkey":
-        titlesQuery = titlesQuery.orderBy(`${request.query[key]}`, sortDir);
-        break;
       case "sortDir":
         sortDir = request.query[key];
         break;
-      case "availableReservations":
-        /*titlesQuery = titlesQuery
-          .join("Reservation", {
-            "Meal.id": "Reservation.meal_id"
-          })
-          .groupBy("Meal.title");*/
+      case "sortKey":
+        sortKey = request.query[key];
+        break;
 
+      case "availableReservations":
         if (request.query[key] === "true") {
           titlesQuery = titlesQuery.whereRaw(
             "Meal.max_reservations > (SELECT COALESCE(SUM(Reservation.number_of_guests),0) FROM Reservation WHERE Reservation.meal_id = Meal.id)"
@@ -67,6 +63,9 @@ function constructDBQuery(request, titlesQuery) {
         throw new Error("wrong or unsupported search parameter");
     }
   });
+  if (sortKey) {
+    titlesQuery = titlesQuery.orderBy(sortKey, sortDir ?? "ASC");
+  }
   return titlesQuery;
 }
 module.exports = constructDBQuery;

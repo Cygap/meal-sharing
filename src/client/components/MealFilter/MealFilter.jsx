@@ -1,5 +1,6 @@
 import { MealsContext } from "../../providers/MealsContextProvider";
 import React, { useContext } from "react";
+import SortButton from "./SortButton";
 export default function MealFilter(params) {
   const { searchParams, setSearchParams } = useContext(MealsContext);
   const handleChange = ({ target }) => {
@@ -14,6 +15,7 @@ export default function MealFilter(params) {
 
   return (
     <>
+      <SortButton />
       <input
         type="text"
         name="title"
@@ -37,12 +39,16 @@ export default function MealFilter(params) {
         value={searchParams.when}
         onChange={handleChange}
       />
-      <input
-        type="checkbox"
-        name="availableReservations"
-        onChange={handleChange}
-        checked={searchParams.availableReservations}
-      />
+      <label htmlFor="availableReservations">
+        Show only available meals
+        <input
+          type="checkbox"
+          name="availableReservations"
+          id="availableReservations"
+          onChange={handleChange}
+          checked={searchParams.availableReservations}
+        />
+      </label>
     </>
   );
 }
