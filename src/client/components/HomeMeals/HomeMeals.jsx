@@ -17,7 +17,7 @@ export default function HomeMeals() {
           color: "blue"
         }}
         to={`${process.env.APP_BASE_URL}:${process.env.CLIENT_PORT}/meals/`}>
-        See more meals
+        ...See more meals
       </Link>
     </>
   );

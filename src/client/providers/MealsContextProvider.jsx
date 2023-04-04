@@ -135,13 +135,12 @@ const MealsContextProvider = (props) => {
       bookings,
       meals
     );
-    const available = getMealById(mealId).max_reservations > bookings;
+    const maxReservations = getMealById(mealId).max_reservations;
+    const available = maxReservations > bookings && maxReservations - bookings;
     dispatchMeals({
       type: "AVAILABLE",
       payload: [{ id: Number(mealId), available }]
     });
-    if (available) {
-    }
   };
 
   return (

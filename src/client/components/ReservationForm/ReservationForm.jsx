@@ -5,7 +5,17 @@ import { MealsContext } from "../../providers/MealsContextProvider";
 export default function ReservationForm({ mealId, className }) {
   const { handleChange, submitHandler, formData } = useContext(FormContext);
   const { getMealById } = useContext(MealsContext);
-  const disabled = !getMealById(mealId).available ?? true;
+  console.log(
+    "%cReservationForm.jsx line:8 !getMealById(mealId).available",
+    "color: #007acc;",
+    !getMealById(mealId).available,
+    mealId
+  );
+  let disabled = false;
+  const currentMeal = getMealById(mealId);
+  if (currentMeal.available !== undefined && currentMeal.available === false) {
+    disabled = true;
+  }
 
   return (
     <form
