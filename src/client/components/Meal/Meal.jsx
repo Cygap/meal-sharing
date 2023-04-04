@@ -26,9 +26,7 @@ export default function Meal({ mealId }) {
     );
   }
   const { title, description, location, when, price, created_date } = meal;
-  const handleExpand = (e) => {
-    setExpanded(!expanded);
-  };
+
   const mealDetailsClassnames = `${mealStyles.mealDetails} ${
     expanded ? mealStyles.mealDetailsExpanded : ""
   }`;
@@ -65,12 +63,6 @@ export default function Meal({ mealId }) {
         </p>
       </div>
       <div className={mealStyles.mealControls}>
-        <button onClick={() => dispatchMeals({ type: "UPD", payload: [meal] })}>
-          modify
-        </button>
-        <button onClick={() => dispatchMeals({ type: "DEL", payload: [meal] })}>
-          delete
-        </button>
         <button onClick={() => setExpanded(!expanded)}>
           {expanded ? "hide" : "details"}
         </button>

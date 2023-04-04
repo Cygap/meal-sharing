@@ -1,0 +1,7 @@
+.filterForm {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.3rem;
+  margin: 0.3rem;
+  justify-content: space-around;
+}

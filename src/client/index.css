@@ -7,13 +7,17 @@
 
 #root {
   height: 100vh;
+}
+.content,
+footer,
+header {
   padding-left: 1rem;
   padding-right: 1rem;
 }
-
 body {
   margin: 0;
   font-size: 17px;
+  height: 100vh;
 }
 
 ul {
@@ -38,14 +42,18 @@ button {
 }
 
 @media screen and (max-width: 1400px) {
-  #root {
+  .content,
+  footer,
+  header {
     padding-left: 1rem;
     padding-right: 1rem;
   }
 }
 
 @media screen and (max-width: 750px) {
-  #root {
+  .content,
+  footer,
+  header {
     padding-left: 3px;
     padding-right: 3px;
   }

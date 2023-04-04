@@ -2,13 +2,16 @@ import React, { useContext } from "react";
 import { FormContext } from "../../providers/FormsContextProvider";
 import { MealsContext } from "../../providers/MealsContextProvider";
 
-export default function ReservationForm({ mealId }) {
+export default function ReservationForm({ mealId, className }) {
   const { handleChange, submitHandler, formData } = useContext(FormContext);
   const { getMealById } = useContext(MealsContext);
   const disabled = !getMealById(mealId).available ?? true;
 
   return (
-    <form name="meal-reservation" onSubmit={(e) => submitHandler(e, mealId)}>
+    <form
+      className={className}
+      name="meal-reservation"
+      onSubmit={(e) => submitHandler(e, mealId)}>
       <fieldset disabled={disabled}>
         <input
           type="number"

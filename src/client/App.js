@@ -1,21 +1,15 @@
 import React from "react";
 import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
 import HomeMeals from "./components/HomeMeals/HomeMeals";
-import Meal from "./components/Meal/Meal";
 import MealDetails from "./components/MealDetails/MealDetails";
 import MealsList from "./components/MealList/MealList";
-
+import "./App.css";
 import MealsContextProvider from "./providers/MealsContextProvider";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <>
-        <h1>Meal Sharing home page</h1>
-        <HomeMeals />
-      </>
-    )
+    element: <HomeMeals />
   },
   {
     path: "/meals",
@@ -39,19 +33,19 @@ const router = createBrowserRouter([
 function App() {
   return (
     <MealsContextProvider>
-      <RouterProvider router={router} />
-      {/* <Router>
-        <Route exact path="/">
-          <h1>I am a meal-sharing APP. Here are the meals:</h1>
-          <MealsList />
-        </Route>
-        <Route exact path="/lol">
-          <p>lol</p>
-        </Route>
-        <Route exact path="/test-component">
-          <TestComponent></TestComponent>
-        </Route>
-      </Router> */}
+      <div className="app-wrapper">
+        <header>
+          <a href="/">
+            <h1>Welcome to the meal sharing</h1>
+          </a>
+        </header>
+        <div className={"content"}>
+          <RouterProvider router={router} />
+        </div>
+        <footer>
+          <p>© 2023, Alexander Sudarikov @ HYF</p>
+        </footer>
+      </div>
     </MealsContextProvider>
   );
 }

@@ -1,6 +1,7 @@
 import { MealsContext } from "../../providers/MealsContextProvider";
 import React, { useContext } from "react";
 import SortButton from "./SortButton";
+import styles from "./filter.module.css";
 export default function MealFilter(params) {
   const { searchParams, setSearchParams } = useContext(MealsContext);
   const handleChange = ({ target }) => {
@@ -14,7 +15,7 @@ export default function MealFilter(params) {
   };
 
   return (
-    <>
+    <div className={styles.filterForm}>
       <SortButton />
       <input
         type="text"
@@ -49,6 +50,6 @@ export default function MealFilter(params) {
           checked={searchParams.availableReservations}
         />
       </label>
-    </>
+    </div>
   );
 }

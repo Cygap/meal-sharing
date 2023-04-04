@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
 import { FormContext } from "../../providers/FormsContextProvider";
-export default function ReviewForm({ mealId, disabled }) {
+export default function ReviewForm({ mealId, disabled, className }) {
   const { handleChange, submitHandler, formData } = useContext(FormContext);
   return (
-    <form name="meal-review" onSubmit={(e) => submitHandler(e, mealId)}>
+    <form
+      className={className}
+      name="meal-review"
+      onSubmit={(e) => submitHandler(e, mealId)}>
       <fieldset disabled={disabled}>
         <input
           type="text"
@@ -16,7 +19,7 @@ export default function ReviewForm({ mealId, disabled }) {
         <textarea
           name="description"
           id={`description-${mealId}`}
-          placeholder="review title"
+          placeholder="review details"
           value={formData.description}
           onChange={handleChange}
         />

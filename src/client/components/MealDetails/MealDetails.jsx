@@ -7,6 +7,7 @@ import ReservationForm from "../ReservationForm/ReservationForm";
 import Reservations from "../Reservations/Reservations";
 import ReviewForm from "../ReviewForm/ReviewForm";
 import Reviews from "../Reviews/Reviews";
+import styles from "./MealDetails.module.css";
 
 export default function MealDetails() {
   const { id } = useParams();
@@ -19,12 +20,20 @@ export default function MealDetails() {
   if (meal) {
     return (
       <>
-        <Meal mealId={meal.id} />
         <FormContextProvider>
-          <ReservationForm mealId={meal.id} />
-          <Reservations mealId={meal.id} />
-          <ReviewForm mealId={meal.id} disabled={false} />
-          <Reviews mealId={meal.id} />
+          <div className={styles.detailsLayout}>
+            <div className={styles.formsLayout}>
+              <Meal mealId={meal.id} />
+              <ReservationForm mealId={meal.id} className={styles.form} />
+              <ReviewForm
+                mealId={meal.id}
+                disabled={false}
+                className={styles.form}
+              />
+            </div>
+            <Reviews mealId={meal.id} className={styles.list} />
+            <Reservations mealId={meal.id} className={styles.list} />
+          </div>
         </FormContextProvider>
       </>
     );
