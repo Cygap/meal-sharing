@@ -73,7 +73,8 @@ const MealsContextProvider = (props) => {
     max_reservations: "",
     maxPrice: "",
     title: "",
-    when: "",
+    dateBefore: "",
+    dateAfter: "",
     availableReservations: ""
   };
   const [searchParams, setSearchParams] = useState(defaultFilter);
@@ -129,12 +130,7 @@ const MealsContextProvider = (props) => {
       (sum, reservation) => (sum += reservation.number_of_guests),
       0
     );
-    console.log(
-      "%cMealsContextProvider.jsx line:114 bookings",
-      "color: #007acc;",
-      bookings,
-      meals
-    );
+
     const maxReservations = getMealById(mealId).max_reservations;
     const available = maxReservations > bookings && maxReservations - bookings;
     dispatchMeals({

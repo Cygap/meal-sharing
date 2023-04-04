@@ -1,3 +1,4 @@
+const knex = require("../database");
 function constructDBQuery(request, titlesQuery) {
   let sortDir;
   let sortKey;
@@ -25,18 +26,10 @@ function constructDBQuery(request, titlesQuery) {
         );
         break;
       case "dateAfter":
-        titlesQuery = titlesQuery.where(
-          `when`,
-          ">",
-          `${Date(request.query[key])}`
-        );
+        titlesQuery = titlesQuery.where(`when`, ">", `${request.query[key]}`);
         break;
       case "dateBefore":
-        titlesQuery = titlesQuery.where(
-          `when`,
-          "<",
-          `${Date(request.query[key])}`
-        );
+        titlesQuery = titlesQuery.where(`when`, "<=", `${request.query[key]}`);
         break;
       case "limit":
         titlesQuery = titlesQuery.limit(`${Number(request.query[key])}`);
@@ -46,16 +39,19 @@ function constructDBQuery(request, titlesQuery) {
         break;
       case "sortKey":
         sortKey = request.query[key];
+        if (request.query[key] === "availableReservations") {
+          titlesQuery = titlesQuery.select(
+            knex.raw(
+              "Meal.max_reservations - (SELECT COALESCE(SUM(`Reservation`.number_of_guests),0) FROM `Reservation` WHERE `Meal`.id = `Reservation`.meal_id) as availableReservations"
+            )
+          );
+        }
         break;
 
       case "availableReservations":
         if (request.query[key] === "true") {
           titlesQuery = titlesQuery.whereRaw(
             "Meal.max_reservations > (SELECT COALESCE(SUM(Reservation.number_of_guests),0) FROM Reservation WHERE Reservation.meal_id = Meal.id)"
-          );
-        } else if (request.query[key] === "false") {
-          titlesQuery = titlesQuery.whereRaw(
-            "Meal.max_reservations <= (SELECT COALESCE(SUM(Reservation.number_of_guests),0) FROM Reservation WHERE Reservation.meal_id = Meal.id)"
           );
         } else {
           titlesQuery = titlesQuery.whereRaw(
