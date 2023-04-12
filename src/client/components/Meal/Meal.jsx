@@ -5,7 +5,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import mealPic from "../../assets/images/Meal-Placeholder.png";
 
 export default function Meal({ mealId }) {
-  const { meals, dispatchMeals, fetchStatus } = useContext(MealsContext);
+  const { meals, getMealById, fetchStatus } = useContext(MealsContext);
   const [expanded, setExpanded] = useState(false);
 
   if (!meals.length && fetchStatus === "done") {
@@ -16,7 +16,7 @@ export default function Meal({ mealId }) {
     return <div>{fetchStatus}</div>;
   }
 
-  const meal = meals.find((meal) => meal.id === Number(mealId));
+  const meal = getMealById(mealId);
   if (!meal) {
     return (
       <>
@@ -25,10 +25,9 @@ export default function Meal({ mealId }) {
       </>
     );
   }
-  const { title, description, location, when, price, created_date } = meal;
-  const handleExpand = (e) => {
-    setExpanded(!expanded);
-  };
+  const { title, description, location, when, price, created_date, available } =
+    meal;
+
   const mealDetailsClassnames = `${mealStyles.mealDetails} ${
     expanded ? mealStyles.mealDetailsExpanded : ""
   }`;
@@ -49,7 +48,9 @@ export default function Meal({ mealId }) {
         <p>
           <b>Description:</b> {description ?? "Meal description is empty"}
         </p>
-
+        <p>
+          <b>Available seats:</b> {available || "No seats left"}
+        </p>
         <p>
           <b>Place:</b> {location ?? "location is empty"}
         </p>
@@ -65,12 +66,6 @@ export default function Meal({ mealId }) {
         </p>
       </div>
       <div className={mealStyles.mealControls}>
-        <button onClick={() => dispatchMeals({ type: "UPD", payload: [meal] })}>
-          modify
-        </button>
-        <button onClick={() => dispatchMeals({ type: "DEL", payload: [meal] })}>
-          delete
-        </button>
         <button onClick={() => setExpanded(!expanded)}>
           {expanded ? "hide" : "details"}
         </button>

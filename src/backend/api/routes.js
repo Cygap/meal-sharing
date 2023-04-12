@@ -18,12 +18,7 @@ router.get("/", async (request, response, next) => {
     let titlesQuery = knex(routesListToDBTables[request.baseUrl][0]).select(
       routesListToDBTables[request.baseUrl][1]
     );
-    console.log(
-      "\x1b[32m",
-      "routes.js line:21 query",
-      "\x1b[0m",
-      titlesQuery.toSQL().sql
-    );
+
     if (request.query && request.baseUrl === "/api/meals") {
       titlesQuery = mealSearch(request, titlesQuery);
     }

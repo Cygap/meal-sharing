@@ -11,8 +11,13 @@ export default function HomeMeals() {
     <>
       <MealsList />
       <Link
+        style={{
+          margin: "1rem",
+          textDecoration: "none",
+          color: "blue"
+        }}
         to={`${process.env.APP_BASE_URL}:${process.env.CLIENT_PORT}/meals/`}>
-        See more meals
+        ...See more meals
       </Link>
     </>
   );

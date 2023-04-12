@@ -1,0 +1,26 @@
+.form fieldset {
+  display: flex;
+  flex-flow: column wrap;
+  width: 15rem;
+  border-radius: 10px;
+}
+
+.list {
+  display: flex;
+  flex-flow: column wrap;
+}
+
+.detailsLayout {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+  justify-content: space-around;
+  margin: 1rem 0;
+}
+
+.formsLayout {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  gap: 0.5rem;
+}
