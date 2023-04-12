@@ -18,14 +18,19 @@ router.get("/", async (request, response, next) => {
     let titlesQuery = knex(routesListToDBTables[request.baseUrl][0]).select(
       routesListToDBTables[request.baseUrl][1]
     );
-
+    console.log(
+      "\x1b[32m",
+      "routes.js line:21 query",
+      "\x1b[0m",
+      titlesQuery.toSQL().sql
+    );
     if (request.query && request.baseUrl === "/api/meals") {
       titlesQuery = mealSearch(request, titlesQuery);
     }
     if (process.env.NODE_ENV === "development") {
       console.log(
         "\x1b[32m",
-        "routes.js line:83 query",
+        "routes.js line:28 query",
         "\x1b[0m",
         titlesQuery.toSQL().sql
       );
@@ -46,6 +51,25 @@ router.post("/", async (request, response, next) => {
   }
 });
 
+router.get("/:id/:metaData", async (request, response, next) => {
+  try {
+    const titles = await knex(request.params.metaData)
+      .select("*")
+      .where("meal_id", request.params.id);
+
+    if (!titles.length) {
+      throw new AccessError(
+        "No meal data found",
+        "Provided id does not reference to any meal or there are no data for the referenced meal."
+      );
+    }
+
+    response.json(titles);
+  } catch (error) {
+    next(error);
+  }
+});
+/*
 router.get("/:id/reviews", async (request, response, next) => {
   try {
     console.log("\x1b[32m", "routes.js line:109 Hello!", "\x1b[0m");
@@ -64,11 +88,10 @@ router.get("/:id/reviews", async (request, response, next) => {
   } catch (error) {
     next(error);
   }
-});
+});*/
 
 router.get("/:id", async (request, response, next) => {
   try {
-    console.log("\x1b[32m", "routes.js line:121 Hello!", "\x1b[0m");
     const titles = await knex(routesListToDBTables[request.baseUrl][0])
       .select(routesListToDBTables[request.baseUrl][1])
       .where("id", request.params.id);
@@ -86,11 +109,6 @@ router.get("/:id", async (request, response, next) => {
 
 router.put("/:id", async (request, response, next) => {
   try {
-    console.log(
-      "%cmeals.js line:47 request.baseUrl",
-      "color: #007acc;",
-      request.baseUrl
-    );
     const updated = await knex(routesListToDBTables[request.baseUrl][0])
       .update(request.body)
       .where("id", request.params.id);

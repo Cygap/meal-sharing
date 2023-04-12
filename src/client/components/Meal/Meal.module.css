@@ -1,6 +1,6 @@
 .meal {
   width: 15rem;
-  height: 15rem;
+  height: 22rem;
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
@@ -10,8 +10,7 @@
 
 .meal:hover {
   text-shadow: 10px darkblue;
-  font-weight: bold;
-  transform: scale(1.1);
+  transform: scale(1.03);
   text-shadow: 0.5rem 0.5rem 0.2rem grey;
 }
 
@@ -31,6 +30,10 @@
   flex-shrink: 1;
   overflow: hidden;
   margin: 0.3rem;
+}
+.imageContainer {
+  object-fit: fill;
+  object-position: 50% 60%;
 }
 .mealDetailsExpanded {
   overflow: auto;

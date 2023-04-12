@@ -8,7 +8,7 @@ const handleError = (error, response) => {
   );
 
   if (error instanceof AccessError) {
-    response.status(404).json({ id: "not found" });
+    response.status(404).json([]);
   } else {
     response.status(500).send(error.message);
   }
