@@ -74,4 +74,5 @@ The api can now be found on `http://localhost:3000/api/` an example is `http://l
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@benna100](https://github.com/benna100) - Idea & Initial work
+- [@benna100](https://github.com/benna100) - Idea & Initial work + boilerplates
+- [@Cygap](https://github.com/Cygap) - Front end components, backend API, mySQL database 
